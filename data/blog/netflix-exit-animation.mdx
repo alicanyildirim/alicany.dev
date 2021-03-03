@@ -1,0 +1,64 @@
+---
+title: 'How does Netflix do it?'
+publishedAt: '2020-02-20'
+summary: "Did you encounter the exit animation Netflix shows when you are leaving the page? Let's see how it is done."
+image: '/static/images/netflix-exit-animation/banner.png'
+---
+
+<Image
+  alt={`Netflix Exit Animation`}
+  src={`/static/images/netflix-exit-animation/banner.png`}
+  width={1800}
+  height={1200}
+  priority
+/>
+
+When you are tired of binge-watching or can't procrastinate anymore, you type a url into the address bar, Netflix shows you a cool animation before leaving the site. See the gif added below to see it in action.
+
+<Image
+  alt={`Netflix Exit Animation in Action`}
+  src={`/static/images/netflix-exit-animation/netflix.gif`}
+  width={900}
+  height={600}
+/>
+
+This is a cool nifty trick that I have seen from time to time but never really register it until one day when I was working on my blog by binge-watching Netflix series. I realized it could be a cool addition to my site, so I started investigating how they achieve this effect. 
+
+
+### OnBeforeUnload
+
+I have found out that the onbeforeunload property of window event handlers is used for this kind of functionality. It is usually used to prompt the user about the unsaved changes before unloading the website. Trying to come up with a way to achieve this with React was straightforward. The below code snippet can be used for creating an exit animation of your choice. 
+
+```jsx:pages/index.js
+export default function Home() {
+  const [isLeaving,setIsLeaving] = useState(false);
+  useEffect(function mount() {
+    function onBeforeUnload() {
+      setIsLeaving(true);
+      console.log("unload!");
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return function unMount() {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  });
+  if (isLeaving) {
+    return(
+      <Goodbye />
+    )
+  } else {
+    return (
+      <Regular Content />
+    )
+  }  
+}
+```
+
+### How does it work?
+I have used the [Effect hook](https://reactjs.org/docs/hooks-effect.html), in which I added an event listener for the beforeunload event. In the onBeforeUnload() function, I change the isLeaving state to true. According to the value of this state, I render the content of the page.   
+
+### Showcase
+You can check the [demo page](https://netflix-exit-animation.web.app/) for proof of concept. I am also attaching the [GitHub repository](https://github.com/alicanyildirim/netflix-exit-animation) of the project. 
+After you click on another website from the address bar, you should observe the exit animation. 
+The duration of this animation varies. If the website to be visited has the fast largest contentful paint, the websites' transition will be too fast for the animation to be completed. 
+You can test the behavior of the animation with different websites.

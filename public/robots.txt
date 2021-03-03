@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://alicany.dev/sitemap.xml

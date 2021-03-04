@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import Tweet from 'react-tweet-embed';
 
 import ProsCard from '@/components/ProsCard';
 import ConsCard from '@/components/ConsCard';
@@ -29,7 +28,6 @@ const MDXComponents = {
   ConsCard,
   ProsCard,
   Step,
-  Tweet,
 };
 
 export default MDXComponents;
